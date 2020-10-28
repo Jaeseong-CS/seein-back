@@ -1,8 +1,9 @@
+import 'dotenv-safe/config';
+
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
-import { config } from 'dotenv-safe';
 import express, { json, urlencoded } from 'express';
-import { connect } from 'mongoose';
+import { connect, set } from 'mongoose';
 import morgan from 'morgan';
 
 import router from './routes/index';
@@ -16,8 +17,6 @@ app.use(urlencoded({ extended: false }));
 app.use(morgan('dev'));
 
 app.use('/', router);
-
-config();
 
 connect(
   process.env.DB_URI!,
@@ -35,5 +34,6 @@ connect(
     console.log('db connected');
   },
 );
+set('useCreateIndex', true);
 
 export default app;
