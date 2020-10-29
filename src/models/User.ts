@@ -10,6 +10,7 @@ const User = createSchema(
   {
     versionKey: false,
     timestamps: true,
+    id: false,
   },
 );
 User.plugin(uniqueValidator);
