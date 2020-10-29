@@ -3,6 +3,7 @@ import { Request, Response } from 'express';
 import { sign } from 'jsonwebtoken';
 import { Error } from 'mongoose';
 
+import { Token } from '../middlewares/auth';
 import { User } from '../models';
 
 export const signin = async (req: Request, res: Response) => {
@@ -21,7 +22,7 @@ export const signin = async (req: Request, res: Response) => {
     return;
   }
 
-  const tempUser = {
+  const tempUser: Token = {
     _id: user._id,
     createdAt: user.createdAt,
     updatedAt: user.updatedAt,
