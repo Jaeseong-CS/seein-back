@@ -1,17 +1,17 @@
 import { NextFunction, Request, Response } from 'express';
 import { verify } from 'jsonwebtoken';
-import { Schema } from 'mongoose';
+import { Types } from 'mongoose';
 
 export type Token = {
-  _id: Schema.Types.ObjectId;
+  _id: Types.ObjectId;
   createdAt: Date;
   updatedAt: Date;
-  id: string;
+  email: string;
   name: string;
 };
 
-type AuthRequest = Request & {
-  token: Token;
+export type AuthRequest = Request & {
+  token?: Token;
 };
 
 export default (req: AuthRequest, res: Response, next: NextFunction) => {
