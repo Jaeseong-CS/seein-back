@@ -3,12 +3,12 @@ import { Request, Response } from 'express';
 import { sign } from 'jsonwebtoken';
 import { Error } from 'mongoose';
 
-import { Token } from '../middlewares/auth';
+import { Token } from '../middleware/auth';
 import { User } from '../models';
 
 export const signin = async (req: Request, res: Response) => {
-  const { id, password }: { id: string; password: string } = req.body;
-  const user = await User.findOne({ id });
+  const { email, password }: { email: string; password: string } = req.body;
+  const user = await User.findOne({ email });
   if (!user) {
     res.sendStatus(404);
     return;
@@ -26,7 +26,7 @@ export const signin = async (req: Request, res: Response) => {
     _id: user._id,
     createdAt: user.createdAt,
     updatedAt: user.updatedAt,
-    id: user.id,
+    email: user.email,
     name: user.name,
   };
 
@@ -41,12 +41,12 @@ export const signin = async (req: Request, res: Response) => {
 };
 
 export const signup = async (req: Request, res: Response) => {
-  const { name, id, password }: { name: string; id: string; password: string } = req.body;
+  const { name, email, password }: { name: string; email: string; password: string } = req.body;
   const salt = randomBytes(16).toString('base64');
   const user = new User({
     name,
-    id,
-    password: `${pbkdf2Sync(password, salt, 10000, 64, 'SHA512')}|${salt}`,
+    email,
+    password: `${pbkdf2Sync(password, salt, 10000, 64, 'SHA512').toString('base64')}|${salt}`,
   });
   try {
     await user.save();

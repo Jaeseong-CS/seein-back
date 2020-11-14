@@ -4,7 +4,7 @@ import { createSchema, Type, typedModel } from 'ts-mongoose';
 const User = createSchema(
   {
     name: Type.string({ required: true, unique: true, trim: true }),
-    id: Type.string({ required: true, unique: true }),
+    email: Type.string({ required: true, unique: true }),
     password: Type.string({ required: true }),
   },
   {
