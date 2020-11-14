@@ -3,22 +3,22 @@ import 'dotenv-safe/config';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import express, { json, urlencoded } from 'express';
-import { connect, set } from 'mongoose';
+import mongoose from 'mongoose';
 import morgan from 'morgan';
 
 import router from './routes/index';
 
 const app = express();
 
-app.use(cookieParser());
-app.use(cors());
-app.use(json());
-app.use(urlencoded({ extended: false }));
-app.use(morgan('dev'));
+app
+  .use(cookieParser())
+  .use(cors())
+  .use(json())
+  .use(urlencoded({ extended: false }))
+  .use(morgan('dev'))
+  .use('/', router);
 
-app.use('/', router);
-
-connect(
+mongoose.connect(
   process.env.DB_URI!,
   {
     user: process.env.DB_USER,
@@ -34,6 +34,7 @@ connect(
     console.log('db connected');
   },
 );
-set('useCreateIndex', true);
+
+mongoose.set('useCreateIndex', true);
 
 export default app;
