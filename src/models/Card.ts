@@ -1,4 +1,7 @@
-import { createSchema, Type, typedModel } from 'ts-mongoose';
+import {
+  createSchema, Type, typedModel,
+} from 'ts-mongoose';
+import { mongoosePagination } from 'ts-mongoose-pagination';
 
 const Card = createSchema(
   {
@@ -11,5 +14,7 @@ const Card = createSchema(
     timestamps: true,
   },
 );
+
+Card.plugin(mongoosePagination);
 
 export default typedModel('Card', Card);
