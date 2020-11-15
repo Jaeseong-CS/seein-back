@@ -1,10 +1,14 @@
 import { pbkdf2Sync, randomBytes } from 'crypto';
 import { Request, Response } from 'express';
-import { sign } from 'jsonwebtoken';
+import { sign, verify as jwtVerify } from 'jsonwebtoken';
 import { Error } from 'mongoose';
 
 import { Token } from '../middleware/auth';
 import { User } from '../models';
+
+export const refresh = (req: Request, res: Response) => {
+  res.sendStatus(400);
+};
 
 export const signin = async (req: Request, res: Response) => {
   const { email, password }: { email: string; password: string } = req.body;
@@ -59,5 +63,19 @@ export const signup = async (req: Request, res: Response) => {
       console.error(err);
       res.status(500).send(err);
     }
+  }
+};
+
+export const verify = (req: Request, res: Response) => {
+  try {
+    const token = req.headers.authorization;
+    if (token?.startsWith('Bearer ')) {
+      jwtVerify(token.substring(7), process.env.ACCESS_KEY!) as Token;
+      res.sendStatus(200);
+    } else {
+      res.sendStatus(401);
+    }
+  } catch {
+    res.sendStatus(401);
   }
 };
