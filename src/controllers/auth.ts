@@ -7,7 +7,23 @@ import { Token } from '../middleware/auth';
 import { User } from '../models';
 
 export const refresh = (req: Request, res: Response) => {
-  res.sendStatus(400);
+  try {
+    const token = req.headers.authorization;
+    if (token?.startsWith('Bearer ')) {
+      const verified = jwtVerify(token.substring(7), process.env.REFRESH_KEY!) as Token;
+      const accessToken = sign(verified, process.env.ACCESS_KEY!, {
+        expiresIn: '7h',
+      });
+      const refreshToken = sign(verified, process.env.REFRESH_KEY!, {
+        expiresIn: '7d',
+      });
+      res.status(200).send({ token: { accessToken, refreshToken } });
+    } else {
+      res.sendStatus(401);
+    }
+  } catch {
+    res.sendStatus(401);
+  }
 };
 
 export const signin = async (req: Request, res: Response) => {
@@ -46,6 +62,10 @@ export const signin = async (req: Request, res: Response) => {
 
 export const signup = async (req: Request, res: Response) => {
   const { name, email, password }: { name: string; email: string; password: string } = req.body;
+  if (!/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(email)) {
+    res.status(400).send('올바른 이메일을 입력해주세요');
+    return;
+  }
   const salt = randomBytes(16).toString('base64');
   const user = new User({
     name,
