@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { Error } from 'mongoose';
 
 import { AuthRequest } from '../middleware/auth';
 import { Card } from '../models';
@@ -17,6 +18,16 @@ export const write = async (req: AuthRequest, res: Response) => {
     content,
     writer: token?.name,
   });
-  await card.save();
-  res.sendStatus(200);
+  try {
+    await card.save();
+    res.sendStatus(200);
+  } catch (err) {
+    if (err instanceof Error.ValidationError) {
+      console.error(err);
+      res.status(400).send(err.message);
+    } else {
+      console.error(err);
+      res.status(500).send(err);
+    }
+  }
 };
