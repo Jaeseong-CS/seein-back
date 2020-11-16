@@ -8,6 +8,8 @@ import morgan from 'morgan';
 
 import router from './routes/index';
 
+require('console-stamp')(console, 'yyyy/mm/dd HH:MM:ss.l');
+
 const app = express();
 
 app
